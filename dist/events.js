@@ -1,3 +1,4 @@
+import {HISTORY_QUESTIONS,HISTORY_SOURCES} from './history-data.js?v=0.5.0';
 // Semantic answer keys are authored; music mood is not inferred from answer wording.
 const pools={
  baby:[['第一次探索','家人陪你认识新环境，你对陌生事物有些害怕。',['在陪伴下慢慢探索','独自靠近危险的地方','强迫自己一直忍住不安'],0],['小小的作息','成长中的你常常玩得忘记休息，家人准备调整生活节奏。',['继续熬夜玩耍','建立吃饭、睡眠与游戏的规律','只要安静就一直看屏幕'],1],['感受与表达','你还不善于说清需要，家人注意到你的情绪变化。',['忽视自己的感受','只用哭闹争抢','在安全陪伴中尝试表达与回应'],2]],
@@ -18,5 +19,5 @@ const pools={
  retired:[['退休后的邀约','退休后，一家机构希望借你的原职务影响公共项目。',['拒绝不当干预，遵守退休后的边界','以原职务施压审批','以顾问名义收取不透明报酬'],0],['晚年的节奏','退休生活有了更多自由时间，你想继续实现价值。',['忽略身体承受能力','结合健康安排阅读、运动和志愿服务','完全切断所有社会交往'],1],['留下经验','青年希望了解你一生的工作经历。',['只描述个人功劳','掩盖所有失误','如实整理经验与教训，帮助后来者独立思考'],2]]
 };
 export function eventPool(s,c){if(s.retired)return 'retired';if(s.stage!=='work')return s.stage==='preschool'?'baby':s.stage;return c.tier===0?'clerk':c.tier<=2?'township':c.tier<=4?'county':c.tier<=6?'city':c.tier<=8?'province':'national';}
-export function storyFor(s,c,ix){const pool=pools[eventPool(s,c)];return pool[ix%pool.length];}
-export const EVENT_POOLS=pools;
+export function storyFor(s,c,ix){const key=eventPool(s,c),pool=HISTORY_QUESTIONS.filter(q=>q.pool===key),used=new Set(s.history.map(h=>h.eventId)),remaining=pool.filter(q=>!used.has(q.id)),available=remaining.length?remaining:pool;const q=available[ix%available.length],source=HISTORY_SOURCES.find(h=>h.id===q.historyId),result=[q.title,q.text,q.options,q.answer];result.meta={id:q.id,source,explanation:q.explanation};return result;}
+export const EVENT_POOLS=Object.fromEntries(Object.keys(pools).map(k=>[k,HISTORY_QUESTIONS.filter(q=>q.pool===k)]));
