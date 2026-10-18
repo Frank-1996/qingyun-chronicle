@@ -1,6 +1,34 @@
-// Replace empty pools with licensed audio URLs; the synthesis fallback works offline.
-export const MUSIC={positive:[],negative:[]};
-let context,current;
-export async function playHint(positive){stop();const pool=positive?MUSIC.positive:MUSIC.negative;if(pool.length){current=new Audio(pool[Math.floor(Math.random()*pool.length)]);await current.play();return;}context=new (window.AudioContext||window.webkitAudioContext)();await context.resume();const root=(positive?261.63:220)*2**(Math.floor(Math.random()*5)/12);const notes=positive?[0,4,7,12,7,9,12,16]:[0,3,7,3,-2,0,-5,0];notes.forEach((n,i)=>{const t=context.currentTime+i*.3;[1,.5].forEach((mul,j)=>{const o=context.createOscillator(),g=context.createGain();o.type=positive?'triangle':'sine';o.frequency.value=root*2**(n/12)*mul;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(j?.06:.13,t+.04);g.gain.exponentialRampToValueAtTime(.001,t+.5);o.connect(g);g.connect(context.destination);o.start(t);o.stop(t+.55);});});}
-export function stop(){if(current){current.pause();current=null;}if(context){context.close().catch(()=>{});context=null;}}
+// Three independent buses. Foreground cues are queued; background ducks, never restarts on a hint.
+export const AGE_POOLS=['少年','成年','晚年'];
+export const MOOD_ANALYSIS={positive:'大调、明亮音色、上行旋律与有力节拍：表达希望、突破与担当。',negative:'小调、下行旋律、稀疏节拍与低沉音色：表达遗憾、失落与代价。'};
+let ctx,buses={},timer,background='',enabled=false,volume=.5,queue=[],busy=false,media=null,generation=0,pageHidden=false,activeNodes=new Map();
+let sources={};try{sources=JSON.parse(localStorage.getItem('qingyun-music-v2')||'{}');}catch{}
+export function musicSources(){return {...sources};}
+export function configureMusic(stage,mood,url){if(!AGE_POOLS.includes(stage)||!['positive','negative'].includes(mood))throw Error('曲库无效');if(url&&!/^https:\/\//i.test(url))throw Error('音频链接需为 HTTPS');sources[stage+'-'+mood]=url;localStorage.setItem('qingyun-music-v2',JSON.stringify(sources));}
+const localFiles={};
+export function setLocalMusic(stage,mood,file){const key=stage+'-'+mood;if(localFiles[key])URL.revokeObjectURL(localFiles[key]);localFiles[key]=URL.createObjectURL(file);}
+export function sourceLabel(stage,mood){return localFiles[stage+'-'+mood]?'本地原声音频':sources[stage+'-'+mood]?'已配置原声音频':'原创替代配乐 · 未接入热门原声';}
+function init(){if(!ctx){ctx=new (window.AudioContext||window.webkitAudioContext)();for(const k of ['background','hint','milestone']){const g=ctx.createGain();g.connect(ctx.destination);buses[k]=g;}applyVolume();}return ctx;}
+function stopBackground(){for(const [o,bus] of activeNodes){if(bus==='background'){try{o.stop();}catch{}activeNodes.delete(o);}}}
+function applyVolume(){if(!ctx)return;const t=ctx.currentTime;buses.background.gain.setTargetAtTime(enabled?volume*(busy?.14:.55):0,t,.12);buses.hint.gain.setTargetAtTime(enabled?volume:0,t,.04);buses.milestone.gain.setTargetAtTime(enabled?volume:0,t,.04);if(media)media.volume=enabled?volume:0;}
+export async function enableMusic(on){enabled=on;if(on){init();await ctx.resume();if(background&&!timer)loopBackground();drain();}else{stopForeground();stopBackground();if(timer){clearTimeout(timer);timer=null;}if(ctx)await ctx.suspend();}applyVolume();return enabled;}
+export const isEnabled=()=>enabled;
+export function setVolume(value){volume=Math.min(1,Math.max(0,value));applyVolume();}
+export const getVolume=()=>volume;
+export function musicEra(s){const a=Math.floor(s.day/365);return s.retired?'归田':a<6?'童梦':a<18?'青葱':s.stage!=='work'?'求索':a<60?'山河':'岁华';}
+export function syncBackground(s){const next=musicEra(s);if(next!==background){for(const [o,bus] of activeNodes){if(bus==='background'){try{o.stop();}catch{}activeNodes.delete(o);}}background=next;if(timer){clearTimeout(timer);timer=null;}if(enabled)loopBackground();}if(s.ended){stopBackground();background='';if(timer){clearTimeout(timer);timer=null;}}}
+function tone(note,start,duration,bus,type='sine',gain=.08,root=261.63){const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.value=root*2**(note/12);const t=ctx.currentTime+start;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(buses[bus]);o.start(t);o.stop(t+duration+.03);activeNodes.set(o,bus);o.onended=()=>{activeNodes.delete(o);o.disconnect();g.disconnect();};}
+function loopBackground(){if(!enabled||!background)return;const motifs={童梦:[0,7,4,7,12,7,4,0],青葱:[0,4,7,9,7,4,2,0],求索:[0,2,7,4,9,7,4,2],山河:[0,7,12,9,7,4,7,0],岁华:[0,4,7,4,2,0,-5,0],归田:[0,7,4,2,0,-5,2,0]},notes=motifs[background]||motifs.童梦;notes.forEach((n,i)=>tone(n,i*.65,.95,'background','sine',.05,background==='童梦'?329.63:196));timer=setTimeout(()=>{timer=null;loopBackground();},5500);}
+function enqueue(job){if(!enabled)return Promise.resolve({muted:true});return new Promise((resolve,reject)=>{queue.push({...job,resolve,reject});drain();});}
+export const playMilestone=type=>enqueue({type,bus:'milestone'});
+export const playHint=(positive,stage='成年')=>enqueue({type:'hint',positive,stage,bus:'hint'});
+async function drain(){if(busy||!enabled||pageHidden||!queue.length)return;busy=true;applyVolume();const job=queue.shift(),own=generation;try{init();await ctx.resume();if(job.type==='hint'){const key=job.stage+'-'+(job.positive?'positive':'negative'),url=localFiles[key]||sources[key];if(url){await playExternal(url);job.resolve({original:true});}else{await synth(job);job.resolve({fallback:true});}}else{await synth(job);job.resolve({});}}catch(e){job.reject(e);}finally{if(own===generation){busy=false;applyVolume();drain();}}}
+let finishExternal=null,finishSynth=null;
+function playExternal(url){return new Promise((resolve,reject)=>{const a=new Audio(url);media=a;let finished=false;let cutoff;const end=e=>{if(finished)return;finished=true;clearTimeout(cutoff);a.pause();a.removeAttribute('src');media=null;finishExternal=null;e?reject(e):resolve();};finishExternal=()=>end();a.volume=volume;a.onended=()=>end();a.onerror=()=>end(Error('音源无法播放，请检查链接或导入本地音频'));cutoff=setTimeout(()=>end(),15000);a.play().catch(end);});}
+function synth(job){return new Promise(resolve=>{let notes,beat=.22,type='triangle',root=261.63;if(job.type==='hint'){const which=AGE_POOLS.indexOf(job.stage);notes=job.positive?[[0,4,7,12,9,7,12,16],[0,7,12,16,14,12,19,24],[0,4,7,11,12,7,16,12]][which]:[[12,10,7,3,2,0,-2,-5],[7,3,0,-2,-5,-2,-7,-12],[12,7,3,0,2,-2,-5,0]][which];type=job.positive?'triangle':'sine';beat=which===2?.35:.24;root=which===0?329.63:220;}else{notes=job.type==='school'?[0,4,7,12,16,19,24]:job.type==='promotion'?[0,7,12,7,16,19,24]:job.type==='xian'?[0,12,7,19,24]:job.type==='death'||job.type==='ending'? [7,3,0,-5,-12]:[12,7,4,2,0];}notes.forEach((n,i)=>tone(n,i*beat,.45,job.bus,type,.1,root));const done=()=>{finishSynth=null;resolve();};const t=setTimeout(done,notes.length*beat*1000+500);finishSynth=()=>{clearTimeout(t);done();};});}
+export function stopForeground(){generation++;queue.splice(0).forEach(j=>j.resolve({cancelled:true}));finishExternal?.();finishSynth?.();for(const [o,bus] of activeNodes){if(bus!=='background'){try{o.stop();}catch{}activeNodes.delete(o);}}busy=false;applyVolume();}
+export function pauseForVisibility(){pageHidden=true;stopForeground();if(timer){clearTimeout(timer);timer=null;}for(const [o,bus] of activeNodes){if(bus==='background'){try{o.stop();}catch{}activeNodes.delete(o);}}if(ctx)ctx.suspend();}
+export async function resumeForVisibility(){pageHidden=false;if(ctx&&enabled){await ctx.resume();if(background&&!timer)loopBackground();drain();}}
+
+
 
