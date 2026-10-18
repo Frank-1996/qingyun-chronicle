@@ -1,4 +1,4 @@
-import {nameAt} from './names.js?v=0.5.0';
+import {nameAt} from './names.js?v=0.6.0';
 // Fictional regions and agencies model Chinese naming patterns; not a real staffing registry.
 export const PROVINCES=['江岚省','海宁省','北川省','云泽省','长宁省','东岭省','南原省','西岳省','松江省','青岚省','锦州省','清河省','星湖省','安陵省','明海省','平原省'];
 const departments=['教育','财政','民政','司法','人力资源和社会保障','自然资源','生态环境','住房和城乡建设','交通运输','水利','农业农村','商务','文化和旅游','应急管理','审计','市场监督管理'];

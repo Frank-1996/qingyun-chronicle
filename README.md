@@ -1,8 +1,15 @@
 # 青云纪 · The Qingyun Chronicle
 
-虚构国家澄川的浏览器人生与官员成长游戏。**v0.5.0 · 观史明志，仙途延年**
+虚构国家澄川的浏览器人生与官员成长游戏。**v0.6.0 · 掌上人生，山河随行**
 
-**[公开试玩](https://frank-1996.github.io/qingyun-chronicle/)**
+**[Vercel试玩](https://qingyun-chronicle.vercel.app/)** · [GitHub Pages备用](https://frank-1996.github.io/qingyun-chronicle/)
+
+## 第六版新增
+
+- 手机竖屏、窄屏、横屏、安全区和44px触屏按钮；底部快捷导航。
+- 微信音频点按解锁、后台恢复、旧内核弹窗与API兼容，文字游玩不等待声音。
+- 手机／微信文本存档导入导出，保留PC三栏和原有文件存档。
+- Vercel静态部署配置、46项测试；[第六版完整说明与真机验证边界](docs/V6-NOTES.md)。
 
 ## 第五版新增
 

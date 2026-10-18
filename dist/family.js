@@ -1,4 +1,4 @@
-import {unusedName,surnameOf} from './names.js?v=0.5.0';
+import {unusedName,surnameOf} from './names.js?v=0.6.0';
 const now=s=>Math.floor(s.day/365);
 const rnd=s=>{s.familyRng=(Math.imul(s.familyRng,1664525)+1013904223)>>>0;return s.familyRng/4294967296;};
 const pick=(s,x)=>x[Math.floor(rnd(s)*x.length)];

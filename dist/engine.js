@@ -1,7 +1,7 @@
-import {initFamily,chooseSpouse,divorce,descendantBoost,validateFamily} from './family.js?v=0.5.0';
-import {appointment,meetOfficial} from './units.js?v=0.5.0';
-import {grade,familyYear} from './life.js?v=0.5.0';
-import {storyFor} from './events.js?v=0.5.0';
+import {initFamily,chooseSpouse,divorce,descendantBoost,validateFamily} from './family.js?v=0.6.0';
+import {appointment,meetOfficial} from './units.js?v=0.6.0';
+import {grade,familyYear} from './life.js?v=0.6.0';
+import {storyFor} from './events.js?v=0.6.0';
 export const KEYS=['德','智','体','美','劳'];
 export const RANKS=['二级科员','一级科员','四级主任科员','三级主任科员','二级主任科员','一级主任科员','四级调研员','三级调研员','二级调研员','一级调研员','二级巡视员','一级巡视员'];
 export const OFFICES=['科员 · 未任领导','乡科级副职','乡科级正职','县处级副职','县处级正职','厅局级副职','厅局级正职','省部级副职','省部级正职','国家级副职','国家级正职 · 国家主席'];

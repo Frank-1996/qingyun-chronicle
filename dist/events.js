@@ -1,4 +1,4 @@
-import {HISTORY_QUESTIONS,HISTORY_SOURCES} from './history-data.js?v=0.5.0';
+import {HISTORY_QUESTIONS,HISTORY_SOURCES} from './history-data.js?v=0.6.0';
 // Semantic answer keys are authored; music mood is not inferred from answer wording.
 const pools={
  baby:[['第一次探索','家人陪你认识新环境，你对陌生事物有些害怕。',['在陪伴下慢慢探索','独自靠近危险的地方','强迫自己一直忍住不安'],0],['小小的作息','成长中的你常常玩得忘记休息，家人准备调整生活节奏。',['继续熬夜玩耍','建立吃饭、睡眠与游戏的规律','只要安静就一直看屏幕'],1],['感受与表达','你还不善于说清需要，家人注意到你的情绪变化。',['忽视自己的感受','只用哭闹争抢','在安全陪伴中尝试表达与回应'],2]],
