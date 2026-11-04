@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Qingyun account database backup
+
+[Timer]
+OnCalendar=*-*-* 19:35:00 UTC
+RandomizedDelaySec=180
+Persistent=true
+Unit=qingyun-accounts-backup.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,28 @@
+[Unit]
+Description=Qingyun isolated player accounts and cloud saves
+After=network.target
+
+[Service]
+User=qingyunplayer
+Group=qingyunplayer
+WorkingDirectory=/opt/qingyun-accounts
+ExecStart=/usr/bin/python3 /opt/qingyun-accounts/accounts.py
+Restart=on-failure
+RestartSec=3
+StateDirectory=qingyun-accounts
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/qingyun-accounts
+RestrictAddressFamilies=AF_INET AF_UNIX
+CapabilityBoundingSet=
+MemoryMax=192M
+CPUQuota=40%
+TasksMax=32
+LimitNOFILE=512
+
+[Install]
+WantedBy=multi-user.target

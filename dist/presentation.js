@@ -1,6 +1,6 @@
-import {openDialog,closeDialog} from './ui.js?v=0.8.0';
-import {illustration} from './illustrations.js?v=0.8.0';
-import {playAnnouncement,stopForeground} from './audio.js?v=0.8.0';
+import {openDialog,closeDialog} from './ui.js?v=0.9.0';
+import {illustration} from './illustrations.js?v=0.9.0';
+import {playAnnouncement,stopForeground} from './audio.js?v=0.9.0';
 let queue=[],running=false,skipCurrent=null;
 export function announceAll(items){queue.push(...items);queueMicrotask(drain);}
 export function clearAnnouncements(){queue=[];skipCurrent?.();stopForeground();}

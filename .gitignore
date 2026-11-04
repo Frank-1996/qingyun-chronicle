@@ -3,3 +3,9 @@ node_modules/
 *.zip
 .DS_Store
 .sites-local/
+
+# Player credentials and private runtime data are never source files
+*.sqlite3
+*.sqlite3-*
+.env
+backend/state/

@@ -1,6 +1,6 @@
-import {WORLD} from './world-data.js?v=0.8.0';
-import {CASES} from './history-v8.js?v=0.8.0';
-import {DESTINIES,destinyRate,travelCost} from './destiny.js?v=0.8.0';
+import {WORLD} from './world-data.js?v=0.9.0';
+import {CASES} from './history-v8.js?v=0.9.0';
+import {DESTINIES,destinyRate,travelCost} from './destiny.js?v=0.9.0';
 export {WORLD};
 export const PATHS=['人间','修仙','修神','宇宙','多元'];
 export const LIFESPANS=[[],[180,240,360,600,1000,1600,2600,4200,6800,10000],[20000,40000,80000,160000,320000,640000,1280000,2560000,5120000],[10000000,25000000,60000000,150000000],[500000000,1000000000,2000000000,5000000000]];

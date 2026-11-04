@@ -1,4 +1,4 @@
-import {NAME_GROUPS,NAME_PARTS} from './names-data.js?v=0.8.0';
+import {NAME_GROUPS,NAME_PARTS} from './names-data.js?v=0.9.0';
 export const NAME_BANK=Object.values(NAME_GROUPS).flat();
 export const COMPOUND_SURNAMES=['欧阳','司马','上官','诸葛','夏侯','东方','皇甫','慕容'];
 export const NAME_STYLES=[['plain','朴实日常'],['modern','当代姓名'],['classic','传统文雅'],['two','两个字'],['three','三个字'],['compound','少量复姓']];

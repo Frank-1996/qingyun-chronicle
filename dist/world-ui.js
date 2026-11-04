@@ -1,5 +1,5 @@
-import {DESTINIES,destiny,travelCost} from './destiny.js?v=0.8.0';
-import {WORLD,PATHS,trialYears,timeSteps,totalAge,fateCost,canRewrite,rewriteDestiny,initWorld,title,ranks,entryReasons,enterImmortal,canTravel,travel,chooseDomain,requirements,breakthroughReasons,breakthrough,train,mission,worldEvent,resolveWorld} from './worlds.js?v=0.8.0';
+import {DESTINIES,destiny,travelCost} from './destiny.js?v=0.9.0';
+import {WORLD,PATHS,trialYears,timeSteps,totalAge,fateCost,canRewrite,rewriteDestiny,initWorld,title,ranks,entryReasons,enterImmortal,canTravel,travel,chooseDomain,requirements,breakthroughReasons,breakthrough,train,mission,worldEvent,resolveWorld} from './worlds.js?v=0.9.0';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $=s=>document.querySelector(s);
 let chosenSpeed=30;

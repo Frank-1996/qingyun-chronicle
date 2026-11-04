@@ -1,4 +1,4 @@
-import {WORLD} from './world-data.js?v=0.8.0';
+import {WORLD} from './world-data.js?v=0.9.0';
 // Reuse media elements primed by a real click/touch; never block gameplay on autoplay permission.
 let worldTheme=null,worldBar=0;
 export function backgroundTheme(s){const w=s.world;if(w?.path>0){const names=['','云海问道','天庭礼乐','星海长歌','诸界回响'],roots=[0,220,146.83,110,98],p=WORLD.planets[w.planet],u=WORLD.universes[w.universe];return {key:`realm-${w.path}-${w.planet}-${w.universe}`,title:`${names[w.path]} · ${p?.name||'星海'} · ${u?.name||'诸界'}`,root:roots[w.path]*2**(((w.planet*2+w.universe)%7)/12),tempo:[0,.43,.32,.55,.61][w.path],minor:(w.planet+w.universe)%3===1,pattern:w.planet+w.universe*3,procedural:true};}if(w?.country){const c=WORLD.countries[w.country];return {key:'country-'+w.country,title:`${c.name} · ${c.land}风物`,root:196*2**((w.country%7)/12),tempo:.3+(w.country%5)*.04,minor:Math.floor(w.country/10)%2===1,pattern:w.country,procedural:true};}return {key:musicEra(s),title:musicEra(s),procedural:false};}
