@@ -11,3 +11,20 @@ header{gap:14px}header>button{padding:8px 12px;font-size:12px;white-space:nowrap
 
 /* Volume V */
 .annual-recap{text-align:left;margin:20px 0;padding:18px;background:#e8eadf;border:1px solid #c4ccba;border-left:3px solid var(--gold);font-size:13px;line-height:1.9}.annual-recap h3{margin:0 0 10px;font-size:16px}.annual-recap ul{margin:0;padding-left:20px}.annual-recap li+li{margin-top:7px}.history-note{margin:20px 0;padding:18px;border:1px solid var(--line);font-size:13px;line-height:1.9}.history-note h3{font-size:16px}.tutorial-note{padding:18px;border-left:3px solid var(--gold);background:#e8eadf;line-height:1.9}#tutorial-next{margin:8px 0}.xian-card button{white-space:normal}.announcement .annual-recap{max-height:32vh;overflow:auto}.event-card h2{line-height:1.65}
+
+.brand .site-signature {
+  display: flex;
+  align-items: center;
+  gap: .45em;
+  margin-bottom: 3px;
+  color: #845824;
+  font: 700 14px/1.25 "STKaiti", "KaiTi", "Noto Serif SC", serif;
+  letter-spacing: .27em;
+}
+.site-signature::after {
+  content: "";
+  width: 1.35em;
+  height: 1px;
+  background: currentColor;
+  opacity: .55;
+}
