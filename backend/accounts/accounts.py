@@ -8,7 +8,7 @@ COOKIE='__Host-qingyun_player'
 SESSION_SECONDS=7*86400
 MAX_BODY=1_600_000
 MAX_SAVE=1_500_000
-ORIGINS={'https://qingyunlife.cn','https://www.qingyunlife.cn','https://qingyun-chronicle.vercel.app','https://read.qingyunlife.cn'}
+ORIGINS={'https://a.qingyunlife.cn','https://qingyunlife.cn','https://www.qingyunlife.cn','https://qingyun-chronicle.vercel.app','https://read.qingyunlife.cn'}
 HASHERS=threading.BoundedSemaphore(2)
 
 class APIError(Exception):
